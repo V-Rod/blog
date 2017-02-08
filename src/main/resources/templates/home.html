@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/> <!-- void html elements must have the closing  /> -->
+    <title>Welcome to my web site!</title>
+</head>
+<body>
+
+<div class="navbar" th:include="fragments/navbar :: navbar">
+    This is inside content
+</div>
+
+
+<h1>This is our home page!!</h1>
+Today is <p th:text="${date}"></p>
+<br/>
+My age is <p th:text="${age}"></p>
+
+<p th:if="${age == 38}">You are 38</p>
+<p th:if="${age == 26}">You are 26</p>
+
+<h2>List of instructors at codeup</h2>
+<ul>
+    <span th:each="name : ${names}">
+        <li th:text="${name}"></li>
+    </span>
+
+</ul>
+
+<div class="footer" th:include="fragments/footer :: footer">
+    This is inside content
+</div>
+</body>
+</html>
