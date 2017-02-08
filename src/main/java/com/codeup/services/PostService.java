@@ -29,15 +29,15 @@ public class PostService {
         return posts;
     }
 
-    public Post findOne(long id) {
-        return posts.get((int) id - 1);
+    public Post findOne(int id) {
+        return posts.get( id - 1) ;
     }
 
     private void createPosts() {
         // create some post objects and add them to the posts list with the save method
 
         for (int i = 0; i < 100; i++) {
-            save(new Post("title" + (i + 1), "Some body content" + (i + 2) ));
+            save(new Post("title" + " " + (i + 1), "Some body content" + " " +(i + 2) ));
         }
 
     }

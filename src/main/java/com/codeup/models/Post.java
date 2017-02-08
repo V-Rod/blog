@@ -5,7 +5,7 @@ package com.codeup.models;
  */
 public class Post {
 
-    private long id;
+    private int id;
     private String title;
     private String body;
 
@@ -22,7 +22,7 @@ public class Post {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

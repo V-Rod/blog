@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>Title</title>
 </head>
 <body>
+<h1>Show just one Post</h1>
+
+<div th:object ="${post}">
+    <h2 th:text="*{title}"></h2>
+    <p th:text="*{body}"></p>
+</div>
 
 </body>
 </html>
