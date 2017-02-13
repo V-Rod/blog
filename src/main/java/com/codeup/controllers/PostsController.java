@@ -1,16 +1,15 @@
 package com.codeup.controllers;
 
 import com.codeup.models.Post;
-import com.codeup.services.PostService;
+import com.codeup.models.User;
+import com.codeup.repositories.PostsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 /**
  * Created by V-Rod on 2/7/17.
@@ -18,44 +17,77 @@ import java.util.List;
 @Controller
 public class PostsController {
 
+//    @Autowired
+//    PostService postService;  //connecting the service to the controller which is a middleman between the database and the controller
+
     @Autowired
-    PostService postService;  //connecting the service to the controller which is a middleman between the database and the controller
+    PostsRepository postDao;
 
     @GetMapping("/posts")
     public String viewAllPosts (Model viewModel) {
 
-        // array list with several Post objects
-        List<Post> posts = postService.findAll();
+        for (Post post: postDao.findWhereTitleLike("%new year%")) {
+            System.out.println(post.getTitle());
+        }
 
-        // pass the list to the view (through a view model)
-
-        // the name you want to use on the left side, it will be the name you will use in the view
-        viewModel.addAttribute("posts", posts );
+        viewModel.addAttribute("posts", postDao.findAll() );
 
         // should return posts/index
         return "posts/index";
     }
 
     @GetMapping("/posts/{id}")
-    public String viewSinglePost (@PathVariable int id, Model viewModel) {
+    public String viewSinglePost (@PathVariable long id, Model viewModel) {
 
         // One Post object, pass the post to the view (through a view model)
-        viewModel.addAttribute("post", postService.findOne(id) );
+        viewModel.addAttribute("post", postDao.findOne(id) );
 
         // show the view
         return "posts/show"; // TODO: should return the show view
     }
 
     @GetMapping("/posts/create")
-    @ResponseBody
-    public String viewCreatePostForm () {
-
-        return "<h1>Form For Create Posts</h1>";
+    public String viewCreatePostForm (Model viewModel) {
+        Post post = new Post();
+        viewModel.addAttribute("post", post);
+        return "posts/create";
     }
 
     @PostMapping("posts/create")
-    @ResponseBody
-    public String createPost(){
-        return "Create a new post";
+    public String createPost(@ModelAttribute Post post, Model viewModel){
+        // get this from session
+        User user = new User();
+        user.setId(2);
+        post.setUser(user);
+        //save the ad means calling the service and using the save method from the service
+        postDao.save(post);
+        viewModel.addAttribute("post", post);
+        return "redirect:/posts";
     }
+
+    @GetMapping("posts/{id}/edit")
+    public String editPost(@PathVariable long id, @ModelAttribute Post post, Model viewModel) {
+        //viewModel.addAttribute("post", postDao.findOne(id));
+        Post editedPost = postDao.findOne(id);
+        viewModel.addAttribute("post", editedPost);
+        return "/posts/edit";
+    }
+
+    @PostMapping("posts/{id}/edit")
+    public String updatePost (@ModelAttribute Post editedPost) {
+        postDao.save(editedPost);
+        return "redirect:/posts";
+    }
+
+    @PostMapping("/posts/delete")
+    public String deletePost(@ModelAttribute Post post) {
+        postDao.delete(postDao.findOne(post.getId()));
+        return "redirect:/posts";
+    }
+
+//    @PostMapping("/posts/search")
+//    public String search(@RequestParam(name="term") String term, Model viewModel) {
+//        viewModel.addAttribute("posts", postDao.findByBodyIsLike(term));
+//        return "posts/index";
+//    }
 }

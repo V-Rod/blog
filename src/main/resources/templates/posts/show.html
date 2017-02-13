@@ -8,8 +8,16 @@
 <h1>Show just one Post</h1>
 
 <div th:object ="${post}">
-    <h2 th:text="*{title}"></h2>
-    <p th:text="*{body}"></p>
+    <h2 th:text="${post.title}"></h2>
+    <p th:text="${post.body}"></p>
+    <p th:text="${post.user.email}"></p>
+
+    <a th:href="@{'/posts/'+${post.id} + '/edit'}">Edit</a>
+
+    <form th:method="POST" th:action="@{/posts/delete}">
+        <input type="hidden" name="id" th:value="${post.id}"/>
+        <button>Delete</button>
+    </form>
 </div>
 
 </body>
