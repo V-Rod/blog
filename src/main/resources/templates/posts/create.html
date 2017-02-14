@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<form action="/posts/create" method="post" th:object="${post}" >
+<form th:action="@{/posts/create}" method="post" th:object="${post}" >
     <label>Title</label>
     <input type="text" name="title" th:field="*{title}"/>
     <label>Body</label>

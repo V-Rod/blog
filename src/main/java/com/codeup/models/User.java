@@ -35,6 +35,16 @@ public class User {
     public User() {
     }
 
+    // pattern
+    // copy constructor -> an alternative to clone
+    public User(User user) {
+        id = user.id;
+        username = user.username;
+        password = user.password;
+        email = user.email;
+        posts = user.posts;
+    }
+
     public List<Post> getPosts() {
         return posts;
     }

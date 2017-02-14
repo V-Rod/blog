@@ -13,7 +13,14 @@
             <li>Link 1</li>
             <li>Link 2</li>
             <li>Link 3</li>
+            <li>
+                <form th:action="@{/logout}" th:method="POST">
+                    <button>Logout</button>
+                </form>
+            </li>
         </ul>
+
+
     </nav>
 </div>
 

@@ -10,7 +10,7 @@
 <h1>All Posts:</h1>
     <ul>
     <li th:each="post : ${posts}">
-        <p>Created by: <span th:text="${post.user.username}" /></p>
+        <!--<p>Created by: <span th:text="${post.user.username}" /></p>-->
         <h1 style="text-align: center"><span th:text="${post.title}"/></h1>
         <p style="text-align: center"><span th:text="${post.body}"/></p>
         <a th:href="@{ '/posts/' + ${post.id} }">Click here to see the post</a>
