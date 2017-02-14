@@ -5,6 +5,8 @@
     <title>Title</title>
 </head>
 <body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
 <h1>Show just one Post</h1>
 
 <div th:object ="${post}">

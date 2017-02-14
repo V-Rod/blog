@@ -1,6 +1,9 @@
 package com.codeup.models;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 /**
  * Created by V-Rod on 2/8/17.
@@ -15,9 +18,12 @@ public class Post {
     private long id;
 
     @Column(nullable = false, length = 100)
+    @NotBlank(message = "Title cannot be empty")
     private String title;
 
     @Column(nullable = false, length = 2000)
+    @NotBlank(message = "Description cannot be empty.")
+    @Size(min = 5, message = "Description must be at least 5 characters long.")
     private String body;
 
     // will define your foreign key

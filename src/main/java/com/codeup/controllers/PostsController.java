@@ -4,12 +4,16 @@ import com.codeup.models.Post;
 import com.codeup.models.User;
 import com.codeup.repositories.PostsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
 
 /**
  * Created by V-Rod on 2/7/17.
@@ -47,25 +51,30 @@ public class PostsController {
     }
 
     @GetMapping("/posts/create")
-    public String viewCreatePostForm (Model viewModel) {
-        Post post = new Post();
+    public String viewCreatePostForm (@ModelAttribute Post post, Model viewModel) {
         viewModel.addAttribute("post", post);
         return "posts/create";
     }
 
     @PostMapping("posts/create")
-    public String createPost(@ModelAttribute Post post, Model viewModel){
+    public String createPost(@Valid Post post, Errors validation, Model viewModel){  // @Valid calls ModelAttribute first
+
+        // if there are errors on validation, the viewModel will take you back to the form
+        if (validation.hasErrors()){
+            viewModel.addAttribute("errors", validation);
+            viewModel.addAttribute("post", post);
+            return "posts/create";
+        }
+
         // get this from session
-        User user = new User();
-        user.setId(2);
+        User user  = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         post.setUser(user);
         //save the ad means calling the service and using the save method from the service
         postDao.save(post);
-        viewModel.addAttribute("post", post);
         return "redirect:/posts";
     }
 
-    @GetMapping("posts/{id}/edit")
+    @GetMapping("/posts/{id}/edit")
     public String editPost(@PathVariable long id, @ModelAttribute Post post, Model viewModel) {
         //viewModel.addAttribute("post", postDao.findOne(id));
         Post editedPost = postDao.findOne(id);
@@ -73,8 +82,15 @@ public class PostsController {
         return "/posts/edit";
     }
 
-    @PostMapping("posts/{id}/edit")
-    public String updatePost (@ModelAttribute Post editedPost) {
+    @PostMapping("/posts/{id}/edit")
+    public String updatePost (@Valid Post editedPost, Errors validation, Model viewModel) {
+
+        if (validation.hasErrors()){
+            viewModel.addAttribute("errors", validation);
+            viewModel.addAttribute("post", editedPost);
+            return "posts/edit";
+        }
+
         postDao.save(editedPost);
         return "redirect:/posts";
     }
