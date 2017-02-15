@@ -8,15 +8,23 @@
 <div th:replace="fragments/navbar :: navbar"></div>
 <h1>Show all posts here</h1>
 
-<h1>All Posts:</h1>
-    <ul>
-        <li th:each="post : ${posts}">
-            <!--<p>Created by: <span th:text="${post.user.username}" /></p>-->
-            <h1 style="text-align: center"><span th:text="${post.title}"/></h1>
-            <p style="text-align: center"><span th:text="${post.body}"/></p>
-            <a th:href="@{ '/posts/' + ${post.id} }">Click here to see the post</a>
-        </li>
-    </ul>
+<!--<h1>All Posts:</h1>-->
+    <!--<ul>-->
+        <!--<li th:each="post : ${posts}">-->
+            <!--&lt;!&ndash;<p>Created by: <span th:text="${post.user.username}" /></p>&ndash;&gt;-->
+            <!--<h1 style="text-align: center"><span th:text="${post.title}"/></h1>-->
+            <!--<p style="text-align: center"><span th:text="${post.body}"/></p>-->
+            <!--<a th:href="@{ '/posts/' + ${post.id} }">Click here to see the post</a>-->
+        <!--</li>-->
+    <!--</ul>-->
+
+<div id="load-posts"></div>
+<script
+        src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"
+></script>
+<script src="/scripts/posts-list.js"></script>
 
 </body>
 </html>

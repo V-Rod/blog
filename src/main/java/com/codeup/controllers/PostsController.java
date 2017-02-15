@@ -8,12 +8,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by V-Rod on 2/7/17.
@@ -30,14 +29,16 @@ public class PostsController {
     @GetMapping("/posts")
     public String viewAllPosts (Model viewModel) {
 
-        for (Post post: postDao.findWhereTitleLike("%new year%")) {
-            System.out.println(post.getTitle());
-        }
-
-        viewModel.addAttribute("posts", postDao.findAll() );
+        viewModel.addAttribute("posts", Collections.emptyList() );
 
         // should return posts/index
         return "posts/index";
+    }
+
+    @GetMapping("/posts.json")
+    public @ResponseBody List<Post> retrieveAllAds() {
+        return (List<Post>) postDao.findAll();
+
     }
 
     @GetMapping("/posts/{id}")
