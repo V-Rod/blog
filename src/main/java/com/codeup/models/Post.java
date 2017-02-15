@@ -1,5 +1,6 @@
 package com.codeup.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class Post {
     // I will user a convention `the_other_table_name_id`
     @ManyToOne
     @JoinColumn(name = "user_id") // define at the table level (foreign key)
+    @JsonManagedReference
     private User user;  //owner, author
 
     public User getUser() {
