@@ -27,20 +27,18 @@ public class Post {
     @Size(min = 5, message = "Description must be at least 5 characters long.")
     private String body;
 
+    @Column
+    private String image;
+
+
+    //-------------------CONSTRUCTORS----------------//
+
     // will define your foreign key
     // I will user a convention `the_other_table_name_id`
     @ManyToOne
     @JoinColumn(name = "user_id") // define at the table level (foreign key)
     @JsonManagedReference
     private User user;  //owner, author
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public Post(long id, String title, String body) {
         this.id = id;
@@ -50,6 +48,25 @@ public class Post {
 
     public Post() {
 
+    }
+
+
+    //--------- GETTERS AND SETTERS -------------//
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public long getId() {

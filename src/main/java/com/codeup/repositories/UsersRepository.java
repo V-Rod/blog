@@ -14,4 +14,10 @@ public interface UsersRepository extends CrudRepository<User, Long> {
     // select * from user username = ?
     public User findByUsername(String username);  // this method will tell us if the user exists in the database
 
+    public User findById(Long id);
+
+    public User findByEmail(String email);
+
+
+
 }

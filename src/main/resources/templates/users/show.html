@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container">
+    <div class="row">
+        <div class="col l10 offset-2">
+            <div th:object="${user}">
+                <h3 th:text="*{username}"></h3>
+                <p th:text="*{email}"></p>
+            </div>
+
+            <div th:if="${showEditControls}">
+                edit and delete buttons go here
+            </div>
+
+            <div sec:authorize="isAuthenticated()">
+                This content is only shown to authenticated users. <br />
+
+                Logged user: <span sec:authentication="name"/> <br/>
+                Existing Roles: <span sec:authentication="principal.authorities"/> <br/>
+
+                <div sec:authorize="hasRole('ROLE_ADMIN')">
+                    <div>show these only for admins</div>
+                </div>
+
+                <div sec:authorize="hasRole('ROLE_USER')">
+                    <div>show these only for users</div>
+                </div>
+
+                <div sec:authorize="hasRole('ROLE_GUEST')">
+                    <div>show these for only guests</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

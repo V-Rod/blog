@@ -13,6 +13,7 @@
     <h2 th:text="${post.title}"></h2>
     <p th:text="${post.body}"></p>
     <!--<p th:text="${post.user.email}"></p>-->
+    <img th:attr="src=${'/uploads/' + post.image}"/>
 
     <a th:href="@{'/posts/'+${post.id} + '/edit'}">Edit</a>
 

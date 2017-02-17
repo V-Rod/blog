@@ -1,16 +1,20 @@
 package com.codeup.controllers;
 
 import com.codeup.models.Post;
-import com.codeup.models.User;
 import com.codeup.repositories.PostsRepository;
+import com.codeup.services.UserSvc;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,11 +24,17 @@ import java.util.List;
 @Controller
 public class PostsController {
 
+    @Value("${uploads}")  // this code is referencing the application.properties file
+    private String uploadsPath;
+
 //    @Autowired
 //    PostService postService;  //connecting the service to the controller which is a middleman between the database and the controller
 
     @Autowired
     PostsRepository postDao;
+
+    @Autowired
+    UserSvc userSvc;
 
     @GetMapping("/posts")
     public String viewAllPosts (Model viewModel) {
@@ -58,7 +68,13 @@ public class PostsController {
     }
 
     @PostMapping("posts/create")
-    public String createPost(@Valid Post post, Errors validation, Model viewModel){  // @Valid calls ModelAttribute first
+    public String createPost(
+            @Valid Post post, // @Valid calls ModelAttribute first
+            Errors validation,
+            Model viewModel,
+            @RequestParam(name = "image_file")MultipartFile uploadedFile  // the parameter name has to be the same here
+                                                                         // and in the view
+    ){
 
         // if there are errors on validation, the viewModel will take you back to the form
         if (validation.hasErrors()){
@@ -67,9 +83,24 @@ public class PostsController {
             return "posts/create";
         }
 
+        String filename = uploadedFile.getOriginalFilename();
+        //System.out.println(filename);
+        String filepath = Paths.get(uploadsPath, filename).toString();
+        //System.out.println(filepath);
+        File destinationFile = new File(filepath);
+
+        try {
+            uploadedFile.transferTo(destinationFile);  // it will move the file in this step
+            viewModel.addAttribute("message", "File successfully uploaded!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            viewModel.addAttribute("message", "Oops! Something went wrong! " + e);
+        }
+
         // get this from session
-        User user  = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        post.setUser(user);
+        // User user  = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        post.setUser(userSvc.loggedInUser());
+        post.setImage(filename);  // displaying the image for the user if they uploaded an image
         //save the ad means calling the service and using the save method from the service
         postDao.save(post);
         return "redirect:/posts";
@@ -101,10 +132,11 @@ public class PostsController {
         postDao.delete(postDao.findOne(post.getId()));
         return "redirect:/posts";
     }
+}
 
 //    @PostMapping("/posts/search")
 //    public String search(@RequestParam(name="term") String term, Model viewModel) {
 //        viewModel.addAttribute("posts", postDao.findByBodyIsLike(term));
 //        return "posts/index";
 //    }
-}
+

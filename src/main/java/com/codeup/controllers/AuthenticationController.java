@@ -1,6 +1,8 @@
 package com.codeup.controllers;
 
 import com.codeup.models.User;
+import com.codeup.models.UserRole;
+import com.codeup.repositories.RolesRepository;
 import com.codeup.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +31,9 @@ public class AuthenticationController {
         this.encoder = encoder;
     }
 
+    @Autowired
+    RolesRepository userRoles;
+
     @GetMapping("/login")
     public String showLoginForm() {
 //        System.out.println(new BCryptPasswordEncoder().encode("codeup"));
@@ -56,7 +61,6 @@ public class AuthenticationController {
             );
         }
 
-
         if (validation.hasErrors()) {
             viewModel.addAttribute("errors", validation);
             viewModel.addAttribute("user", user);
@@ -66,8 +70,14 @@ public class AuthenticationController {
         String hashedPassword = encoder.encode(user.getPassword()); // hash the users password
         user.setPassword(hashedPassword);
 
-        repository.save(user);  // save the user to the database
+        User newUser = new User(repository.save(user));  // save the user to the database
 
+        UserRole ur = new UserRole();  // assign roles to the user after it was created
+        ur.setRole("ROLE_USER");
+        ur.setUserId(newUser.getId());
+        userRoles.save(ur);
+
+        viewModel.addAttribute("user", user);
         return "redirect:/login";  // redirect the user to the login page
     }
 }
